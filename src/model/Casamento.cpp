@@ -32,12 +32,6 @@ Casamento::Casamento(const string& idCasamento, Casal* casal,
     }
 }
 
-// Destrutor
-Casamento::~Casamento() {
-    delete casal;
-    delete festa;
-}
-
 // Getters
 string Casamento::getIdCasamento() const {
     return idCasamento;

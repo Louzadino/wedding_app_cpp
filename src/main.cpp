@@ -14,33 +14,44 @@
 #include "model/Festa.hpp"
 #include "model/Compra.hpp"
 #include "model/Tarefa.hpp"
+
+#include "repository/PessoaRepository.hpp"
+
 #include "util/DateUtils.hpp"
+#include "util/CSVReader.hpp"
+
 #include "exception/DataInconsistencyException.hpp"
 
 using namespace std;
-using namespace model;
-using namespace exception;
 
-int main() {
+int main(int argc, char* argv[]) {
+
+    if (argc < 2) {
+        cerr << "Erro: Caminho do arquivo de entrada não especificado." << endl;
+        return 1;
+    }
+
+    string caminhoArquivoEntrada = argv[1];
+
+    // Definição dos caminhos dos arquivos CSV
+    string caminhoArquivoPessoas = caminhoArquivoEntrada + "/pessoas.csv";
+    string caminhoArquivoCasamento = caminhoArquivoEntrada + "/casamentos.csv";
+    string caminhoArquivoCompra = caminhoArquivoEntrada + "/compras.csv";
+    string caminhoArquivoFesta = caminhoArquivoEntrada + "/festas.csv";
+    string caminhoArquivoLares = caminhoArquivoEntrada + "/lares.csv";
+    string caminhoArquivoTarefa = caminhoArquivoEntrada + "/tarefas.csv";
+
+    // Inicialização dos repositórios
+    repository::PessoaRepository pessoaRepo;
 
     try {
-
         // Configura o locale padrão do sistema
         // std::locale::global(std::locale(""));
         // std::cout.imbue(std::locale());
 
-        Casal c1 = Casal("01234567890123456789012345678901", 
-                        "01234567890123456789012345678902", 
-                        "01234567890123456789012345678903", 
-                        "01234567890123456789012345678904");
-
-        Endereco end1 = Endereco("Rua 1", 1, "Casa 1");
-
-        // Teste com dados válidos
-        Lar l1 = Lar("01234567890123456789012345678905", c1, end1);
-
-        // Printa os dados da pessoa
-        cout << l1 << endl;
+        // Carregar dados dos CSVs
+        pessoaRepo.carregarDadosDoCSV(caminhoArquivoPessoas);
+        pessoaRepo.~PessoaRepository();
 
     } catch (const DataInconsistencyException& e) {
         cerr << "Exceção capturada: " << e.what() << endl;

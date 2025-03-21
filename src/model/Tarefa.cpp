@@ -7,7 +7,6 @@ using namespace std;
 
 namespace model {
     class Tarefa;
-    class Compra;
 }
 
 // Função auxiliar para adicionar dias a uma data
@@ -21,7 +20,7 @@ tm Tarefa::adicionarDias(const tm& data, int dias) const {
 
 // Construtor
 Tarefa::Tarefa(const string& idTarefa, const string& idLar, const string& idPrestador,
-               const tm& dataInicio, int prazoEntrega, double valorPrestador, int numParcelas, Compra* compra)
+               const tm& dataInicio, int prazoEntrega, double valorPrestador, int numParcelas, model::Compra* compra)
     : dataInicio(dataInicio), prazoEntrega(prazoEntrega), valorPrestador(valorPrestador),
       numParcelas(numParcelas), compra(compra) {
 
@@ -52,13 +51,6 @@ Tarefa::Tarefa(const string& idTarefa, const string& idLar, const string& idPres
     this->idTarefa = idTarefa;
     this->idLar = idLar;
     this->idPrestador = idPrestador;
-}
-
-// Destrutor
-Tarefa::~Tarefa() {
-    if (compra != nullptr) {
-        delete compra;
-    }
 }
 
 // Getters
@@ -94,12 +86,12 @@ int Tarefa::getNumParcelas() const {
     return numParcelas;
 }
 
-Compra* Tarefa::getCompra() const {
+model::Compra* Tarefa::getCompra() const {
     return compra;
 }
 
 // Setters
-void Tarefa::setCompra(Compra* compra) {
+void Tarefa::setCompra(model::Compra* compra) {
     this->compra = compra;
 }
 
@@ -113,7 +105,8 @@ ostream& operator<<(ostream& os, const Tarefa& tarefa) {
     dataInicioStream << put_time(&tarefa.dataInicio, "%d/%m/%Y");
 
     ostringstream dataEntregaStream;
-    dataEntregaStream << put_time(&tarefa.getDataEntrega(), "%d/%m/%Y");
+    auto dataEntrega = tarefa.getDataEntrega();
+    dataEntregaStream << put_time(&dataEntrega, "%d/%m/%Y");
 
     os << "Tarefa{ID='" << tarefa.getIdTarefa()
        << "', ID Lar='" << tarefa.getIdLar()

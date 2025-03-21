@@ -11,7 +11,6 @@ using namespace std;
 
 namespace model {
     class Tarefa;
-    class Compra;
 }
 
 /**
@@ -26,7 +25,7 @@ private:
     int prazoEntrega;
     double valorPrestador;
     int numParcelas;
-    Compra* compra; // Pode ser nullptr
+    model::Compra* compra; // Pode ser nullptr
 
     tm adicionarDias(const tm& data, int dias) const;
 
@@ -44,10 +43,7 @@ public:
      * @param compra         Compra de materiais associada à tarefa (pode ser null).
      */    
     Tarefa(const string& idTarefa, const string& idLar, const string& idPrestador,
-           const tm& dataInicio, int prazoEntrega, double valorPrestador, int numParcelas, Compra* compra);
-
-    // Destrutor
-    ~Tarefa();
+           const tm& dataInicio, int prazoEntrega, double valorPrestador, int numParcelas, model::Compra* compra);
 
     // Getters
     string getIdTarefa() const;
@@ -58,10 +54,10 @@ public:
     tm getDataEntrega() const;
     double getValorPrestador() const;
     int getNumParcelas() const;
-    Compra* getCompra() const;
+    model::Compra* getCompra() const;
 
     // Setters
-    void setCompra(Compra* compra);
+    void setCompra(model::Compra* compra);
 
     double getValorParcela() const;
 

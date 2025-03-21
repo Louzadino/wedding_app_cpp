@@ -41,9 +41,6 @@ public:
               const tm& dataCasamento, const string& horaCasamento,
               const string& localCerimonia, Festa* festa);
 
-    // Destrutor
-    ~Casamento();
-
     // Getters
     string getIdCasamento() const;
     Casal* getCasal() const;
