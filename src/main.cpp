@@ -6,7 +6,10 @@
 #include "model/PessoaFisica.hpp"
 #include "model/PessoaJuridica.hpp"
 #include "model/Loja.hpp"
+#include "model/Casal.hpp"
+#include "model/Lar.hpp"
 #include "model/Financeiro.hpp"
+#include "model/Endereco.hpp"
 #include "util/DateUtils.hpp"
 #include "exception/DataInconsistencyException.hpp"
 
@@ -22,16 +25,18 @@ int main() {
         // std::locale::global(std::locale(""));
         // std::cout.imbue(std::locale());
 
+        Casal c1 = Casal("01234567890123456789012345678901", 
+                        "01234567890123456789012345678902", 
+                        "01234567890123456789012345678903", 
+                        "01234567890123456789012345678904");
+
+        Endereco end1 = Endereco("Rua 1", 1, "Casa 1");
+
         // Teste com dados válidos
-        Loja l1 = Loja("Loja 1", "1234-1234", "Rua 1", "12.123.123/1234-22", "01234567890123456789012345678901");
+        Lar l1 = Lar("01234567890123456789012345678905", c1, end1);
 
         // Printa os dados da pessoa
         cout << l1 << endl;
-
-        // Teste com ID inválido
-        Loja l2 = Loja("Loja 2", "12.123.123/1234-1", "Rua 2", "12.123.123/1234-11", "1");
-        
-        cout << "Erro: deveria ter lançado exceção!" << endl;
 
     } catch (const DataInconsistencyException& e) {
         cerr << "Exceção capturada: " << e.what() << endl;
