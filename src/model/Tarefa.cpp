@@ -6,8 +6,6 @@
 using namespace std;
 
 namespace model {
-    class Tarefa;
-}
 
 // Função auxiliar para adicionar dias a uma data
 tm Tarefa::adicionarDias(const tm& data, int dias) const {
@@ -122,3 +120,5 @@ ostream& operator<<(ostream& os, const Tarefa& tarefa) {
 
     return os;
 }
+
+} // namespace model

@@ -3,8 +3,6 @@
 using namespace std;
 
 namespace model {
-    class Compra;
-}
 
 Compra::Compra(const string& idCompra, const string& idLoja,
                const string& idTarefa, const string& nomeProduto,
@@ -88,3 +86,5 @@ ostream& operator<<(ostream& os, const Compra& compra) {
        << "}";
     return os;
 }
+
+} // namespace model

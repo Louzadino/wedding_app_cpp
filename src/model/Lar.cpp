@@ -6,7 +6,7 @@ using namespace std;
 namespace model {
 
 // Construtor
-Lar::Lar(const string& idLar, const Casal& casal, const Endereco& endereco)
+Lar::Lar(const string& idLar, Casal *casal, const Endereco& endereco)
     : idLar(idLar), casal(casal), endereco(endereco) {
     validarId(idLar);
 }
@@ -23,7 +23,7 @@ string Lar::getIdLar() const {
     return idLar;
 }
 
-Casal Lar::getCasal() const {
+Casal* Lar::getCasal() const {
     return casal;
 }
 

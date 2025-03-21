@@ -3,8 +3,6 @@
 using namespace std;
 
 namespace model {
-    class Festa;
-}
 
 // Construtor
 Festa::Festa(const string& idFesta, const string& idCasamento, const string& endereco,
@@ -134,3 +132,5 @@ ostream& operator<<(ostream& os, const Festa& festa) {
 
     return os;
 }
+
+} // namespace model

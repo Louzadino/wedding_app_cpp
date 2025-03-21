@@ -11,8 +11,6 @@
 using namespace std;
 
 namespace model {
-    class Festa;
-}
 
 class Festa {
 
@@ -70,5 +68,7 @@ public:
     // Sobrecarga do operador <<
     friend ostream& operator<<(ostream& os, const Festa& festa);
 };
+
+}
 
 #endif

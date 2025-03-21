@@ -16,7 +16,7 @@ class Lar {
 
 private:
     string idLar;
-    Casal casal;
+    Casal* casal;
     Endereco endereco;
 
     // Método para validar ID
@@ -30,11 +30,11 @@ public:
      * @param casal      Casal que mora no lar.
      * @param endereco   Endereço do lar.
      */
-    Lar(const string& idLar, const Casal& casal, const Endereco& endereco);
+    Lar(const string& idLar, Casal *casal, const Endereco& endereco);
 
     // Getters
     string getIdLar() const;
-    Casal getCasal() const;
+    Casal* getCasal() const;
     Endereco getEndereco() const;
 
     // Setters

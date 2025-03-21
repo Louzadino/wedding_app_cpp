@@ -9,8 +9,6 @@
 using namespace std;
 
 namespace model {
-    class Compra;
-}
 
 class Compra {
 
@@ -55,5 +53,7 @@ public:
     // Sobrecarga do operador << para impressão
     friend ostream& operator<<(ostream& os, const Compra& compra);
 };
+
+}
 
 #endif

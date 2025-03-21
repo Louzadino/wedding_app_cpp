@@ -91,7 +91,7 @@ Pessoa* PessoaRepository::buscarPorId(const string& id) const {
     return nullptr;
 }
 
-void PessoaRepository::carregarDadosDoCSV(const string& caminhoArquivo) {
+void PessoaRepository::carregarDados(const string& caminhoArquivo) {
     vector<vector<string>> linhas = CSVReader::lerCSV(caminhoArquivo);
 
     locale brasilianLocale("pt_BR.UTF-8");

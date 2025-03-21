@@ -10,8 +10,6 @@
 using namespace std;
 
 namespace model {
-    class Tarefa;
-}
 
 /**
  * Classe que representa uma tarefa associada à organização de um lar.
@@ -64,5 +62,7 @@ public:
     // Sobrecarga do operador <<
     friend ostream& operator<<(ostream& os, const Tarefa& tarefa);
 };
+
+} // namespace model
 
 #endif

@@ -28,7 +28,7 @@ public:
     void remover(Pessoa* pessoa);
     vector<Pessoa*> listar() const;
     Pessoa* buscarPorId(const string& id) const;
-    void carregarDadosDoCSV(const string& caminhoArquivo);
+    void carregarDados(const string& caminhoArquivo);
 };
 
 }

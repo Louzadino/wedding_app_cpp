@@ -15,7 +15,13 @@
 #include "model/Compra.hpp"
 #include "model/Tarefa.hpp"
 
+#include "repository/CasamentoRepository.hpp"
+#include "repository/CompraRepository.hpp"
+#include "repository/FestaRepository.hpp"
+#include "repository/LarRepository.hpp"
 #include "repository/PessoaRepository.hpp"
+#include "repository/TarefaRepository.hpp"
+#include "repository/CasalRepository.hpp"
 
 #include "util/DateUtils.hpp"
 #include "util/CSVReader.hpp"
@@ -43,6 +49,12 @@ int main(int argc, char* argv[]) {
 
     // Inicialização dos repositórios
     repository::PessoaRepository pessoaRepo;
+    repository::LarRepository larRepo;
+    repository::TarefaRepository tarefaRepo;
+    repository::CompraRepository compraRepo;
+    repository::CasamentoRepository casamentoRepo;
+    repository::FestaRepository festaRepo;
+    repository::CasalRepository casalRepo;
 
     try {
         // Configura o locale padrão do sistema
@@ -50,14 +62,22 @@ int main(int argc, char* argv[]) {
         // std::cout.imbue(std::locale());
 
         // Carregar dados dos CSVs
-        pessoaRepo.carregarDadosDoCSV(caminhoArquivoPessoas);
-        pessoaRepo.~PessoaRepository();
+        pessoaRepo.carregarDados(caminhoArquivoPessoas);
+        larRepo.carregarDados(caminhoArquivoLares, pessoaRepo, casalRepo);
+        tarefaRepo.carregarDados(caminhoArquivoTarefa, larRepo, pessoaRepo);
+        compraRepo.carregarDados(caminhoArquivoCompra, tarefaRepo, pessoaRepo);
+        casamentoRepo.carregarDados(caminhoArquivoCasamento, pessoaRepo, festaRepo, larRepo, casalRepo);
+        festaRepo.carregarDados(caminhoArquivoFesta, casamentoRepo, pessoaRepo);
+        casamentoRepo.recarregarFestas(festaRepo); // Recarregar festas após carregar os casamentos
 
     } catch (const DataInconsistencyException& e) {
         cerr << "Exceção capturada: " << e.what() << endl;
     } catch (const std::runtime_error& e) {
         cerr << "Exceção capturada: " << e.what() << endl;
     }
+
+    // Destrutores
+    pessoaRepo.~PessoaRepository();
 
     return 0;
 }
