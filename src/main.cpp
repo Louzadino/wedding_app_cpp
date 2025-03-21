@@ -10,6 +10,8 @@
 #include "model/Lar.hpp"
 #include "model/Financeiro.hpp"
 #include "model/Endereco.hpp"
+#include "model/Casamento.hpp"
+#include "model/Festa.hpp"
 #include "util/DateUtils.hpp"
 #include "exception/DataInconsistencyException.hpp"
 
