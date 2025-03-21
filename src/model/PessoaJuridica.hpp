@@ -1,7 +1,7 @@
 #ifndef PESSOAJURIDICA_H
 #define PESSOAJURIDICA_H
 
-#include "model/Pessoa.hpp"
+#include "Pessoa.hpp"
 #include "exception/DataInconsistencyException.hpp"
 #include <string>
 #include <stdexcept>

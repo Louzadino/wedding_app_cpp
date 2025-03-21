@@ -4,7 +4,7 @@
 #include "Pessoa.hpp"
 #include "exception/DataInconsistencyException.hpp"
 #include "util/DateUtils.hpp"
-#include "model/Financeiro.hpp"
+#include "Financeiro.hpp"
 #include <string>
 #include <stdexcept>
 #include <regex>

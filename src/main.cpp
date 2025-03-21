@@ -5,6 +5,7 @@
 #include "model/Pessoa.hpp"
 #include "model/PessoaFisica.hpp"
 #include "model/PessoaJuridica.hpp"
+#include "model/Loja.hpp"
 #include "model/Financeiro.hpp"
 #include "util/DateUtils.hpp"
 #include "exception/DataInconsistencyException.hpp"
@@ -22,13 +23,13 @@ int main() {
         // std::cout.imbue(std::locale());
 
         // Teste com dados válidos
-        PessoaJuridica p1 = PessoaJuridica("Empresa 1", "12.123.123/1234-22", "Rua 1", "00.000.000/0000-00", "01234567890123456789012345678901");
+        Loja l1 = Loja("Loja 1", "1234-1234", "Rua 1", "12.123.123/1234-22", "01234567890123456789012345678901");
 
         // Printa os dados da pessoa
-        cout << p1 << endl;
+        cout << l1 << endl;
 
         // Teste com ID inválido
-        PessoaJuridica p2 = PessoaJuridica("Empresa 2", "12.123.123/1234-22", "Rua 2", "00.000.000/0000-00", "2");
+        Loja l2 = Loja("Loja 2", "12.123.123/1234-1", "Rua 2", "12.123.123/1234-11", "1");
         
         cout << "Erro: deveria ter lançado exceção!" << endl;
 
