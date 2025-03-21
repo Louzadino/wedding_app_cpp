@@ -11,10 +11,9 @@
  #define DATEUTILS_H_
  
  #include <ctime>
- #include <time.h>
  #include <string>
  
- namespace cpp_util {
+ namespace util {
  
  using namespace std;
  

@@ -8,7 +8,6 @@
  */
 
  #include <iostream>
- #include <time.h>
  #include "DateUtils.hpp"
  
  using namespace std;
@@ -16,12 +15,12 @@
  /* Maximum size of the string buffer used to format dates. */
  #define MAX_DATE_STRING_SIZE 100
  
- namespace cpp_util {
+ namespace util {
  
  /* Converts dates in human-readable format to machine-processable format for storing in objects. */
  time_t parseDate(const string& str, const string& format) {
      // Creates an empty calendar.
-     struct tm calendar = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+     struct tm calendar = {};
  
      // Fills the calendar fields (year, month, day, etc.) based on the date string following the given format.
      strptime(str.c_str(), format.c_str(), &calendar);
