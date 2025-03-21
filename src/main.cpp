@@ -12,6 +12,8 @@
 #include "model/Endereco.hpp"
 #include "model/Casamento.hpp"
 #include "model/Festa.hpp"
+#include "model/Compra.hpp"
+#include "model/Tarefa.hpp"
 #include "util/DateUtils.hpp"
 #include "exception/DataInconsistencyException.hpp"
 
