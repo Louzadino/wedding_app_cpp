@@ -23,6 +23,8 @@
 #include "repository/TarefaRepository.hpp"
 #include "repository/CasalRepository.hpp"
 
+#include "service/EstatisticasPrestadoresService.hpp"
+
 #include "util/DateUtils.hpp"
 #include "util/CSVReader.hpp"
 
@@ -70,7 +72,17 @@ int main(int argc, char* argv[]) {
         festaRepo.carregarDados(caminhoArquivoFesta, casamentoRepo, pessoaRepo);
         casamentoRepo.recarregarFestas(festaRepo); // Recarregar festas após carregar os casamentos
 
+        // Saidas dos arquivos
+        string caminhoArquivoRelatorio1 = caminhoArquivoEntrada + "/saida/1-planejamento.csv";
+        string caminhoArquivoRelatorio2 = caminhoArquivoEntrada + "/saida/2-estatisticas-prestadores.csv";
+        string caminhoArquivoRelatorio3 = caminhoArquivoEntrada + "/saida/3-estatisticas-casais.csv";
+
+        // Gerar estatísticas de prestadores de serviço
+        service::EstatisticasPrestadoresService estatisticasPrestadores(pessoaRepo, tarefaRepo, compraRepo);
+        estatisticasPrestadores.gerarRelatorioPrestadores(caminhoArquivoRelatorio2);
+
         // Print dos dados para teste
+        /*
         vector<Pessoa*> pessoas = pessoaRepo.listar();
         for (const auto& pessoa : pessoas) {
             cout << *pessoa << endl;
@@ -105,6 +117,7 @@ int main(int argc, char* argv[]) {
         for (const auto& casal : casais) {
             cout << *casal << endl;
         }
+        */
 
     } catch (const DataInconsistencyException& e) {
         cerr << "Exceção capturada: " << e.what() << endl;
