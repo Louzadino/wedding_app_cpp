@@ -12,6 +12,7 @@ LarRepository::LarRepository() {}
 
 LarRepository::~LarRepository() {
     for (auto& par : lares) {
+        //delete par.second->getCasal(); // Libera o casal associado ao lar
         delete par.second;
     }
     lares.clear(); // Limpa o mapa após a deleção

@@ -66,20 +66,15 @@ int main(int argc, char* argv[]) {
         larRepo.carregarDados(caminhoArquivoLares, pessoaRepo, casalRepo);
         tarefaRepo.carregarDados(caminhoArquivoTarefa, larRepo, pessoaRepo);
         compraRepo.carregarDados(caminhoArquivoCompra, tarefaRepo, pessoaRepo);
-        //casamentoRepo.carregarDados(caminhoArquivoCasamento, pessoaRepo, festaRepo, larRepo, casalRepo);
-        //festaRepo.carregarDados(caminhoArquivoFesta, casamentoRepo, pessoaRepo);
-        //casamentoRepo.recarregarFestas(festaRepo); // Recarregar festas após carregar os casamentos
+        casamentoRepo.carregarDados(caminhoArquivoCasamento, pessoaRepo, festaRepo, larRepo, casalRepo);
+        festaRepo.carregarDados(caminhoArquivoFesta, casamentoRepo, pessoaRepo);
+        casamentoRepo.recarregarFestas(festaRepo); // Recarregar festas após carregar os casamentos
 
     } catch (const DataInconsistencyException& e) {
         cerr << "Exceção capturada: " << e.what() << endl;
     } catch (const std::runtime_error& e) {
         cerr << "Exceção capturada: " << e.what() << endl;
     }
-
-    // Destrutores
-    pessoaRepo.~PessoaRepository();
-    larRepo.~LarRepository();
-    tarefaRepo.~TarefaRepository();
 
     return 0;
 }

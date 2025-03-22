@@ -18,6 +18,7 @@ TarefaRepository::~TarefaRepository() {
         if (par.second != nullptr) {  // Verifica se a tarefa existe
             if (par.second->getCompra() != nullptr) { 
                 delete par.second->getCompra(); // Libera a compra associada à tarefa
+                par.second->setCompra(nullptr); // Remove a referência da compra da tarefa
             }
             delete par.second; // Libera a própria tarefa
         }

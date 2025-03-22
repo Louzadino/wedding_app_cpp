@@ -14,6 +14,7 @@ namespace repository {
 
 PessoaRepository::PessoaRepository() {}
 
+// Destrutor
 PessoaRepository::~PessoaRepository() {
     for (auto& par : pessoas) {
         delete par.second;

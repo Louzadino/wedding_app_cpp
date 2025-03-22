@@ -16,11 +16,13 @@ CasamentoRepository::CasamentoRepository() {}
 // Destrutor
 CasamentoRepository::~CasamentoRepository() {
     for (auto& par : casamentos) {
-        delete par.second;
+        if (par.second != nullptr) {
+            delete par.second;
+        }
     }
-    casamentos.clear(); // Limpa o mapa após a deleção
-    IDs.clear();
+    casamentos.clear();
 }
+
 
 void CasamentoRepository::adicionar(Casamento* casamento) {
     if (casamento == nullptr) {
@@ -66,13 +68,7 @@ void CasamentoRepository::carregarDados(const string& caminhoArquivo, PessoaRepo
                                         CasalRepository& casalRepo) {
     vector<vector<string>> linhas = CSVReader::lerCSV(caminhoArquivo);
 
-    try {
-        locale brasilianLocale("pt_BR.UTF-8");
-        locale::global(brasilianLocale);
-    } catch (const runtime_error& e) {
-        cerr << "Erro ao configurar o locale 'pt_BR.UTF-8': " << e.what() << endl;
-        cerr << "Usando o locale padrão do sistema." << endl;
-    }
+    locale brasilianLocale("pt_BR.UTF-8");
 
     for (const auto& campos : linhas) {
         if (campos.size() < 6) {

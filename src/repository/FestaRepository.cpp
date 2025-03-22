@@ -16,8 +16,10 @@ FestaRepository::FestaRepository() {}
 // Destrutor
 FestaRepository::~FestaRepository() {
     for (const auto& item : festas) {
+        item.second->getConvidados().clear();
         delete item.second;
     }
+    festas.clear();
 }
 
 void FestaRepository::adicionar(Festa* festa) {
