@@ -7,6 +7,9 @@
 #include <regex>
 #include <iostream>
 #include <algorithm>
+#include <ctime>
+
+#include "util/DateUtils.hpp"
 
 using namespace std;
 
@@ -14,13 +17,15 @@ namespace model {
 
 class Festa {
 
+class DateUtils;
+
 private:
     string idFesta;
     string idCasamento;
     string endereco;
     double valorFesta;
     int numParcelas;
-    string data;
+    tm data;
     string hora;
     vector<string> convidados;
 
@@ -41,7 +46,7 @@ public:
      * @param convidados  Lista de nomes dos convidados.
      */
     Festa(const string& idFesta, const string& idCasamento, const string& endereco,
-          double valorFesta, int numParcelas, const string& data, const string& hora,
+          double valorFesta, int numParcelas, const tm& data, const string& hora,
           const vector<string>& convidados);
 
     // Getters
@@ -51,14 +56,13 @@ public:
     double getValorFesta() const;
     int getNumParcelas() const;
     double getValorParcela() const;
-    string getData() const;
+    tm getData() const;
     string getHora() const;
     vector<string> getConvidados() const;
 
     // Setters
     void setEndereco(const string& endereco);
     void setValorFesta(double valorFesta);
-    void setData(const string& data);
     void setHora(const string& hora);
 
     // Métodos adicionais

@@ -3,11 +3,13 @@
 
 using namespace std;
 
+const char* FORMATADOR_DATA = "%d/%m/%Y"; // Formato de data: dia/mês/ano
+
 namespace model {
 
 // Construtor
 Festa::Festa(const string& idFesta, const string& idCasamento, const string& endereco,
-             double valorFesta, int numParcelas, const string& data, const string& hora,
+             double valorFesta, int numParcelas, const tm& data, const string& hora,
              const vector<string>& convidados)
     : idFesta(idFesta), idCasamento(idCasamento), endereco(endereco),
       valorFesta(validarValor(valorFesta, "Valor da festa")), numParcelas(numParcelas),
@@ -55,7 +57,7 @@ double Festa::getValorParcela() const {
     return valorFesta / numParcelas;
 }
 
-string Festa::getData() const {
+tm Festa::getData() const {
     return data;
 }
 
@@ -77,13 +79,6 @@ void Festa::setEndereco(const string& endereco) {
 
 void Festa::setValorFesta(double valorFesta) {
     this->valorFesta = validarValor(valorFesta, "Valor da festa");
-}
-
-void Festa::setData(const string& data) {
-    if (data.empty()) {
-        throw invalid_argument("A data da festa não pode ser nula.");
-    }
-    this->data = data;
 }
 
 void Festa::setHora(const string& hora) {
@@ -129,7 +124,7 @@ ostream& operator<<(ostream& os, const Festa& festa) {
        << "Valor da festa: R$ " << fixed << setprecision(2) << festa.valorFesta << endl
        << "Número de parcelas: " << festa.numParcelas << endl
        << "Valor da parcela: R$ " << fixed << setprecision(2) << festa.getValorParcela() << endl
-       << "Data: " << festa.data << endl
+       << "Data: " << util::formatDate(festa.data, FORMATADOR_DATA) << endl
        << "Hora: " << festa.hora << endl
        << "Convidados:" << endl;
     for (const auto& convidado : festa.convidados) {
