@@ -24,6 +24,7 @@
 #include "repository/CasalRepository.hpp"
 
 #include "service/EstatisticasPrestadoresService.hpp"
+#include "service/EstatisticasCasaisService.hpp"
 
 #include "util/DateUtils.hpp"
 #include "util/CSVReader.hpp"
@@ -76,6 +77,10 @@ int main(int argc, char* argv[]) {
         string caminhoArquivoRelatorio1 = caminhoArquivoEntrada + "/saida/1-planejamento.csv";
         string caminhoArquivoRelatorio2 = caminhoArquivoEntrada + "/saida/2-estatisticas-prestadores.csv";
         string caminhoArquivoRelatorio3 = caminhoArquivoEntrada + "/saida/3-estatisticas-casais.csv";
+
+        // Gerar estatísticas dos casais
+        service::EstatisticasCasaisService estatisticasCasais(casalRepo, casamentoRepo, pessoaRepo, tarefaRepo, festaRepo, compraRepo, larRepo);
+        estatisticasCasais.gerarEstatisticas(caminhoArquivoRelatorio3);
 
         // Gerar estatísticas de prestadores de serviço
         service::EstatisticasPrestadoresService estatisticasPrestadores(pessoaRepo, tarefaRepo, compraRepo);

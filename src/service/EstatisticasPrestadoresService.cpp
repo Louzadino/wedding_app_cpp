@@ -10,7 +10,7 @@ using namespace model;
 
 namespace service {
 
-struct NumPunctBR : std::numpunct<char> {
+struct NumPunctBR : numpunct<char> {
 protected:
     char do_decimal_point() const override {
         return ','; // Define vírgula como separador decimal
