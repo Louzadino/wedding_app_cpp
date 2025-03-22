@@ -70,6 +70,42 @@ int main(int argc, char* argv[]) {
         festaRepo.carregarDados(caminhoArquivoFesta, casamentoRepo, pessoaRepo);
         casamentoRepo.recarregarFestas(festaRepo); // Recarregar festas após carregar os casamentos
 
+        // Print dos dados para teste
+        vector<Pessoa*> pessoas = pessoaRepo.listar();
+        for (const auto& pessoa : pessoas) {
+            cout << *pessoa << endl;
+        }
+
+        vector<Lar*> lares = larRepo.listar();
+        for (const auto& lar : lares) {
+            cout << *lar << endl;
+        }
+
+        vector<Tarefa*> tarefas = tarefaRepo.listar();
+        for (const auto& tarefa : tarefas) {
+            cout << *tarefa << endl;
+        }
+
+        vector<Compra*> compras = compraRepo.listar();
+        for (const auto& compra : compras) {
+            cout << *compra << endl;
+        }
+
+        vector<Casamento*> casamentos = casamentoRepo.listar();
+        for (const auto& casamento : casamentos) {
+            cout << *casamento << endl;
+        }
+
+        vector<Festa*> festas = festaRepo.listar();
+        for (const auto& festa : festas) {
+            cout << *festa << endl;
+        }
+
+        vector<Casal*> casais = casalRepo.listar();
+        for (const auto& casal : casais) {
+            cout << *casal << endl;
+        }
+
     } catch (const DataInconsistencyException& e) {
         cerr << "Exceção capturada: " << e.what() << endl;
     } catch (const std::runtime_error& e) {

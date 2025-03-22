@@ -1,4 +1,5 @@
 #include "Festa.hpp"
+#include <iomanip>
 
 using namespace std;
 
@@ -122,14 +123,18 @@ double Festa::validarValor(double valor, const string& campo) {
 
 // Sobrecarga do operador <<
 ostream& operator<<(ostream& os, const Festa& festa) {
-    os << "Festa{ID='" << festa.idFesta << "', CasamentoID='" << festa.idCasamento
-       << "', Convidados=" << festa.convidados.size()
-       << ", Data='" << festa.data
-       << "', Hora='" << festa.hora
-       << "', Endereço='" << festa.endereco
-       << "', Valor=R$ " << festa.valorFesta
-       << ", Parcelas=" << festa.numParcelas << "}";
-
+    os << "ID da festa: " << festa.idFesta << endl
+       << "ID do casamento: " << festa.idCasamento << endl
+       << "Endereço: " << festa.endereco << endl
+       << "Valor da festa: R$ " << fixed << setprecision(2) << festa.valorFesta << endl
+       << "Número de parcelas: " << festa.numParcelas << endl
+       << "Valor da parcela: R$ " << fixed << setprecision(2) << festa.getValorParcela() << endl
+       << "Data: " << festa.data << endl
+       << "Hora: " << festa.hora << endl
+       << "Convidados:" << endl;
+    for (const auto& convidado : festa.convidados) {
+        os << "  - " << convidado << endl;
+    }
     return os;
 }
 

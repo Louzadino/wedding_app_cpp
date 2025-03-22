@@ -36,11 +36,10 @@ void Lar::setEndereco(const Endereco& endereco) {
     this->endereco = endereco;
 }
 
-// Sobrecarga do operador <<
 ostream& operator<<(ostream& os, const Lar& lar) {
-    os << "Lar { ID = '" << lar.idLar 
-       << "', Casal = " << lar.casal 
-       << ", Endereço = " << lar.endereco << " }";
+    os << "ID: " << lar.idLar << endl;
+    os << "Casal: " << lar.casal->getIdPessoa1() << " e " << lar.casal->getIdPessoa2() << endl;
+    os << "Endereço: " << lar.endereco << endl;
     return os;
 }
 

@@ -58,4 +58,12 @@ void Pessoa::setEndereco(const string& endereco) {
     this->endereco = endereco;
 }
 
+ostream& operator<<(ostream& os, const Pessoa& pessoa) {
+    os << "ID: " << pessoa.idPessoa << endl;
+    os << "Nome: " << pessoa.nome << endl;
+    os << "Telefone: " << pessoa.telefone << endl;
+    os << "Endereço: " << pessoa.endereco << endl;
+    return os;
+}
+
 } // namespace model

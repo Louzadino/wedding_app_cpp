@@ -99,25 +99,17 @@ double Tarefa::getValorParcela() const {
 
 // Sobrecarga do operador <<
 ostream& operator<<(ostream& os, const Tarefa& tarefa) {
-    ostringstream dataInicioStream;
-    dataInicioStream << put_time(&tarefa.dataInicio, "%d/%m/%Y");
+    os << "ID da tarefa: " << tarefa.idTarefa << endl;
+    os << "ID do lar: " << tarefa.idLar << endl;
+    os << "ID do prestador: " << tarefa.idPrestador << endl;
+    os << "Data de início: " << put_time(&tarefa.dataInicio, "%d/%m/%Y") << endl;
+    os << "Prazo de entrega: " << tarefa.prazoEntrega << " dias" << endl;
 
-    ostringstream dataEntregaStream;
-    auto dataEntrega = tarefa.getDataEntrega();
-    dataEntregaStream << put_time(&dataEntrega, "%d/%m/%Y");
-
-    os << "Tarefa{ID='" << tarefa.getIdTarefa()
-       << "', ID Lar='" << tarefa.getIdLar()
-       << "', ID Prestador='" << tarefa.getIdPrestador()
-       << "', Data Início='" << dataInicioStream.str()
-       << "', Prazo='" << tarefa.getPrazoEntrega() << " dias"
-       << "', Data Entrega='" << dataEntregaStream.str()
-       << "', Valor Prestador='R$ " << tarefa.getValorPrestador()
-       << "', Parcelas='" << tarefa.getNumParcelas()
-       << "', Valor Parcela='R$ " << tarefa.getValorParcela()
-       << "', Compra=" << (tarefa.getCompra() != nullptr ? tarefa.getCompra() : nullptr)
-       << "}";
-
+    tm dataEntrega = tarefa.getDataEntrega();
+    os << "Data de entrega: " << put_time(&dataEntrega, "%d/%m/%Y") << endl;    os << "Valor do prestador: R$ " << fixed << setprecision(2) << tarefa.valorPrestador << endl;
+    os << "Número de parcelas: " << tarefa.numParcelas << endl;
+    os << "Valor da parcela: R$ " << fixed << setprecision(2) << tarefa.getValorParcela() << endl;
+    os << "Compra associada: " << (tarefa.compra == nullptr ? "Nenhuma" : tarefa.compra->getIdCompra()) << endl;
     return os;
 }
 

@@ -75,15 +75,15 @@ double Compra::getValorParcela() const {
 
 // Sobrecarga do operador << para impressão
 ostream& operator<<(ostream& os, const Compra& compra) {
-    os << "Compra{"
-       << "ID='" << compra.idCompra << "', "
-       << "ID Loja='" << compra.idLoja << "', "
-       << "ID Tarefa='" << compra.idTarefa << "', "
-       << "Produto='" << compra.nomeProduto << "', "
-       << "Quantidade=" << compra.quantidade << ", "
-       << "Valor Unitário=" << compra.valorUnitario << ", "
-       << "Parcelas=" << compra.numParcelas
-       << "}";
+    os << "ID da compra: " << compra.idCompra << endl
+       << "ID da loja: " << compra.idLoja << endl
+       << "ID da tarefa: " << compra.idTarefa << endl
+       << "Nome do produto: " << compra.nomeProduto << endl
+       << "Quantidade: " << compra.quantidade << endl
+       << "Valor unitário: " << compra.valorUnitario << endl
+       << "Número de parcelas: " << compra.numParcelas << endl
+       << "Valor total: " << compra.valorTotal() << endl
+       << "Valor da parcela: " << compra.getValorParcela() << endl;
     return os;
 }
 

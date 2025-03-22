@@ -48,12 +48,9 @@ bool Casal::temLar() const {
 
 // Sobrecarga do operador << para impressão
 ostream& operator<<(ostream& os, const Casal& casal) {
-    os << "Casal {"
-       << "Pessoa 1 = '" << casal.idPessoa1 << "', "
-       << "Pessoa 2 = '" << casal.idPessoa2 << "', "
-       << "Casamento = " << (casal.temCasamento() ? casal.idCasamento : "Nenhum") << ", "
-       << "Lar = " << (casal.temLar() ? casal.idLar : "Nenhum")
-       << "}";
+    os << "Casal: " << casal.idPessoa1 << " e " << casal.idPessoa2 << endl;
+    os << "Casamento: " << casal.idCasamento << endl;
+    os << "Lar: " << casal.idLar << endl;
     return os;
 }
 

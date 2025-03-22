@@ -82,17 +82,14 @@ void Casamento::setFesta(Festa* festa) {
 
 // Sobrecarga do operador << para imprimir detalhes do casamento
 ostream& operator<<(ostream& os, const Casamento& casamento) {
-    os << "Casamento {"
-       << "ID = '" << casamento.idCasamento << "', "
-       << "Casal = '" << casamento.casal->getIdPessoa1() << " + " << casamento.casal->getIdPessoa2() << "', "
-       << "Data = ";
-
-    // Formatar a data corretamente
-    os << put_time(&casamento.dataCasamento, "%d/%m/%Y") << ", ";
-
-    os << "Hora = '" << casamento.horaCasamento << "', "
-       << "Local = '" << casamento.localCerimonia << "', "
-       << "}";
+    os << "ID do casamento: " << casamento.idCasamento << endl;
+    os << "Casal: " << *casamento.casal << endl;
+    os << "Data do casamento: " << put_time(&casamento.dataCasamento, "%d/%m/%Y") << endl;
+    os << "Hora do casamento: " << casamento.horaCasamento << endl;
+    os << "Local da cerimônia: " << casamento.localCerimonia << endl;
+    if (casamento.festa != nullptr) {
+        os << "Festa: " << *casamento.festa << endl;
+    }
     return os;
 }
 
