@@ -12,10 +12,17 @@ namespace repository {
 
 TarefaRepository::TarefaRepository() {}
 
+// 🔹 Destrutor (Libera memória das tarefas e compras associadas)
 TarefaRepository::~TarefaRepository() {
-    for (const auto& item : tarefas) {
-        delete item.second;
+    for (auto& par : tarefas) {
+        if (par.second != nullptr) {  // Verifica se a tarefa existe
+            if (par.second->getCompra() != nullptr) { 
+                delete par.second->getCompra(); // Libera a compra associada à tarefa
+            }
+            delete par.second; // Libera a própria tarefa
+        }
     }
+    tarefas.clear(); // Remove todos os elementos do mapa
 }
 
 void TarefaRepository::adicionar(Tarefa* tarefa) {

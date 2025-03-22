@@ -15,10 +15,19 @@ CompraRepository::CompraRepository() {}
 
 // Destrutor
 CompraRepository::~CompraRepository() {
-    for (const auto& item : compras) {
-        delete item.second;
+    // Percorre todas as compras e desaloca a memória
+    for (auto& par : compras) {
+        delete par.second;  // Libera a memória de cada objeto Compra*
+    }
+    
+    compras.clear(); // Agora limpa o mapa corretamente
+
+    // Verifica se ainda há compras (debug)
+    if (!compras.empty()) {
+        cerr << "⚠️ Aviso: O repositório de compras ainda contém itens após desalocação!" << endl;
     }
 }
+
 
 void CompraRepository::adicionar(Compra* compra) {
     if (compra == nullptr) {
