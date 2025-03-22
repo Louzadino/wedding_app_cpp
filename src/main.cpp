@@ -1,19 +1,9 @@
 #include <iostream>
-#include <locale>
-#include <ctime>
-
-#include "model/Pessoa.hpp"
-#include "model/PessoaFisica.hpp"
-#include "model/PessoaJuridica.hpp"
-#include "model/Loja.hpp"
-#include "model/Casal.hpp"
-#include "model/Lar.hpp"
-#include "model/Financeiro.hpp"
-#include "model/Endereco.hpp"
-#include "model/Casamento.hpp"
-#include "model/Festa.hpp"
-#include "model/Compra.hpp"
-#include "model/Tarefa.hpp"
+#include <fstream>
+#include <sstream>
+#include <vector>
+#include <string>
+#include <stdexcept>
 
 #include "repository/CasamentoRepository.hpp"
 #include "repository/CompraRepository.hpp"
@@ -25,9 +15,7 @@
 
 #include "service/EstatisticasPrestadoresService.hpp"
 #include "service/EstatisticasCasaisService.hpp"
-
-#include "util/DateUtils.hpp"
-#include "util/CSVReader.hpp"
+#include "service/PlanejamentoFinanceiro.hpp"
 
 #include "exception/DataInconsistencyException.hpp"
 
@@ -60,10 +48,6 @@ int main(int argc, char* argv[]) {
     repository::CasalRepository casalRepo;
 
     try {
-        // Configura o locale padrão do sistema
-        // std::locale::global(std::locale(""));
-        // std::cout.imbue(std::locale());
-
         // Carregar dados dos CSVs
         pessoaRepo.carregarDados(caminhoArquivoPessoas);
         larRepo.carregarDados(caminhoArquivoLares, pessoaRepo, casalRepo);
@@ -86,43 +70,42 @@ int main(int argc, char* argv[]) {
         service::EstatisticasPrestadoresService estatisticasPrestadores(pessoaRepo, tarefaRepo, compraRepo);
         estatisticasPrestadores.gerarRelatorioPrestadores(caminhoArquivoRelatorio2);
 
-        // Print dos dados para teste
-        /*
-        vector<Pessoa*> pessoas = pessoaRepo.listar();
-        for (const auto& pessoa : pessoas) {
-            cout << *pessoa << endl;
-        }
+        // Gerar planejamento financeiro do casal
+        service::PlanejamentoFinanceiro planejamento(casalRepo, casamentoRepo, pessoaRepo, tarefaRepo, festaRepo, compraRepo, larRepo);
 
-        vector<Lar*> lares = larRepo.listar();
-        for (const auto& lar : lares) {
-            cout << *lar << endl;
-        }
 
-        vector<Tarefa*> tarefas = tarefaRepo.listar();
-        for (const auto& tarefa : tarefas) {
-            cout << *tarefa << endl;
+        // Criar ou limpar arquivo CSV
+        ofstream writer(caminhoArquivoRelatorio1);
+        if (!writer.is_open()) {
+            throw runtime_error("Erro ao abrir arquivo de saída.");
         }
+        writer.close();
 
-        vector<Compra*> compras = compraRepo.listar();
-        for (const auto& compra : compras) {
-            cout << *compra << endl;
-        }
+        // Ler os CPFs do arquivo de entrada e gerar o planejamento
+        string linha;
+        while (getline(cin, linha)) {
+            linha.erase(0, linha.find_first_not_of(" \t")); // Remove espaços em branco do início
+            linha.erase(linha.find_last_not_of(" \t") + 1); // Remove espaços em branco do final
 
-        vector<Casamento*> casamentos = casamentoRepo.listar();
-        for (const auto& casamento : casamentos) {
-            cout << *casamento << endl;
-        }
+            // Se a linha estiver vazia, encerra o loop (não há mais CPFs para processar)
+            if (linha.empty()) {
+                break;
+            }
 
-        vector<Festa*> festas = festaRepo.listar();
-        for (const auto& festa : festas) {
-            cout << *festa << endl;
-        }
+            stringstream ss(linha);
+            vector<string> cpfs;
+            string cpf;
 
-        vector<Casal*> casais = casalRepo.listar();
-        for (const auto& casal : casais) {
-            cout << *casal << endl;
+            while (getline(ss, cpf, ',')) {
+                cpf.erase(0, cpf.find_first_not_of(" \t")); // Remove espaços antes do CPF
+                cpf.erase(cpf.find_last_not_of(" \t") + 1); // Remove espaços depois do CPF
+                cpfs.push_back(cpf);
+            }
+
+            if (cpfs.size() == 2) {
+                planejamento.gerarPlanejamento(caminhoArquivoRelatorio1, cpfs[0], cpfs[1]);
+            }
         }
-        */
 
     } catch (const DataInconsistencyException& e) {
         cerr << "Exceção capturada: " << e.what() << endl;

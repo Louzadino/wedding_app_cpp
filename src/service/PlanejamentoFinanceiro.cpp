@@ -57,7 +57,7 @@ void PlanejamentoFinanceiro::gerarPlanejamento(const string& filePath, const str
         escreverMensagem(filePath, "Casal com CPFs " + cpf1 + " e " + cpf2 + " não possui gastos cadastrados.");
         return;
     }
-
+    
     escreverCSV(filePath, pessoa1, pessoa2, saldoMensal, dataInicial, dataFinal);
 }
 
@@ -133,18 +133,11 @@ map<string, double> PlanejamentoFinanceiro::calcularSaldoMensalCasal(Casal* casa
             break;
         }
 
-        adicionarMes(dataAtual);
+        // Avança para o próximo mês
+        dataAtual = adicionarMeses(dataAtual, 1);
     }
 
     return saldoMensal;
-}
-
-void adicionarMes(tm& data) {
-    data.tm_mon += 1; // Adiciona 1 ao mês
-    if (data.tm_mon > 11) { // Se ultrapassar dezembro
-        data.tm_mon = 0;    // Volta para janeiro
-        data.tm_year += 1;  // Incrementa o ano
-    }
 }
 
 double PlanejamentoFinanceiro::calcularGanhosPorMes(tm data, const string& idPessoa1, const string& idPessoa2) {
@@ -214,9 +207,7 @@ double PlanejamentoFinanceiro::calcularGastosPorMes(const string& idCasamento, t
     for (Festa* festa : festas.listar()) {
         Casamento* casamentoAssociado = casamentos.buscarPorId(festa->getIdCasamento());
         if (casamentoAssociado != nullptr && idCasamento == casamentoAssociado->getIdCasamento()) {
-            time_t parsedDate = parseDate(festa->getData(), FORMATADOR_DATA);
-            tm* dataTm = localtime(&parsedDate);
-            if (dataTm != nullptr && estaParcelaSendoPaga(*dataTm, festa->getNumParcelas(), data)) {
+            if (estaParcelaSendoPaga(festa->getData(), festa->getNumParcelas(), data)) {
                 totalGastos += festa->getValorParcela();
             }
         }
@@ -241,7 +232,7 @@ void PlanejamentoFinanceiro::escreverCSV(const string& filePath, PessoaFisica* p
             strftime(buffer, sizeof(buffer), "%m/%Y", &dataAtual);
             file << buffer << ";";
             if (dataAtual.tm_year == dataFim.tm_year && dataAtual.tm_mon == dataFim.tm_mon) break;
-            dataAtual.tm_mon++;
+            dataAtual = adicionarMeses(dataAtual, 1);
         }
         file << "\n";
 
@@ -253,7 +244,7 @@ void PlanejamentoFinanceiro::escreverCSV(const string& filePath, PessoaFisica* p
             strftime(buffer, sizeof(buffer), "%m/%Y", &dataAtual);
             file << "R$ " << fixed << setprecision(2) << saldoMensal[buffer] << ";";
             if (dataAtual.tm_year == dataFim.tm_year && dataAtual.tm_mon == dataFim.tm_mon) break;
-            dataAtual.tm_mon++;
+            dataAtual = adicionarMeses(dataAtual, 1);
         }
         file << "\n";
     }
@@ -294,30 +285,144 @@ tm PlanejamentoFinanceiro::encontrarPrimeiroGasto(Casal* casal) {
     // Buscar festas associadas ao casal
     for (Festa* festa : festas.listar()) {
         if (festa->getIdCasamento() == casal->getIdCasamento()) {
-            time_t parsedDate = parseDate(festa->getData(), FORMATADOR_DATA);
-            tm dataTm = localtime(parsedDate);
-
-            datas.push_back(dataTm);
+            datas.push_back(festa->getData());
         }
     }
 
     // Buscar compras associadas a tarefas do casal
-    for (Compra* compra : compraRepo.listar()) {
-        Tarefa* tarefa = tarefaRepo.buscarPorId(compra->getIdTarefa());
-        if (tarefa != nullptr) {
-            Lar* lar = larRepo.buscarPorId(tarefa->getIdLar());
-            if (lar != nullptr) {
-                Casal* casalLar = &lar->getCasal();
-                if ((casalLar->getIdPessoa1() == idPessoa1 && casalLar->getIdPessoa2() == idPessoa2) ||
-                    (casalLar->getIdPessoa1() == idPessoa2 && casalLar->getIdPessoa2() == idPessoa1)) {
-                    datas.push_back(tarefa->getDataInicio());
-                }
-            }
+    for (Compra* compra : compras.listar()) {
+        // Verifica se a compra pertence ao lar do casal
+        string idTarefa = compra->getIdTarefa();
+        string idLarAssociadaTarefa = tarefas.buscarPorId(idTarefa)->getIdLar();
+
+
+        if ((lares.buscarPorId(idLarAssociadaTarefa)->getCasal()->getIdPessoa1() == idPessoa1) &&
+            (lares.buscarPorId(idLarAssociadaTarefa)->getCasal()->getIdPessoa2() == idPessoa2)) {
+            datas.push_back(tarefas.buscarPorId(compra->getIdTarefa())->getDataInicio());
         }
     }
 
     // Retorna a menor data encontrada ou um valor nulo caso não haja dados
-    return datas.empty() ? system_clock::time_point() : *min_element(datas.begin(), datas.end());
+    tm menorData = encontrarMenorData(datas);
+    if (menorData.tm_year == -1) {
+        cout << "Menor data inválida" << endl;
+        return {};
+    }
+
+    return menorData;
+}
+
+tm PlanejamentoFinanceiro::calcularDataFinal(Casal* casal, const string& idPessoa1, const string& idPessoa2) {
+        // Inicializa a data final
+        tm dataFinal = {};
+        dataFinal.tm_year = 0;  // Ano 1900 (tm_year é o número de anos desde 1900)
+        dataFinal.tm_mon = 0;   // Janeiro (baseado em zero)
+        dataFinal.tm_mday = 1;  // Dia 1
+
+        // Última data considerando parcelas das TAREFAS
+        tm ultimaDataTarefa = {};
+        for (const auto& tarefa : tarefas.listar()) {
+            Lar* lar = lares.buscarPorId(tarefa->getIdLar());
+            if (lar && ((lar->getCasal()->getIdPessoa1() == idPessoa1 && lar->getCasal()->getIdPessoa2() == idPessoa2) ||
+                        (lar->getCasal()->getIdPessoa1() == idPessoa2 && lar->getCasal()->getIdPessoa2() == idPessoa1))) {
+                
+                // Adiciona o número de parcelas - 1 meses à data de início da tarefa
+                tm novaData = adicionarMeses(tarefa->getDataInicio(), tarefa->getNumParcelas() - 1);
+                if (mktime(&novaData) > mktime(&ultimaDataTarefa)) {
+                    ultimaDataTarefa = novaData;
+                }
+            }
+        }
+
+        // Última data considerando parcelas das FESTAS
+        tm ultimaDataFesta = {};
+        for (const auto& festa : festas.listar()) {
+            if (festa->getIdCasamento() == casal->getIdCasamento()) {
+                // Adiciona o número de parcelas - 1 meses à data da festa
+                tm novaData = adicionarMeses(festa->getData(), festa->getNumParcelas() - 1);
+                if (mktime(&novaData) > mktime(&ultimaDataFesta)) {
+                    ultimaDataFesta = novaData;
+                }
+            }
+        }
+
+        // Última data considerando parcelas das COMPRAS
+        tm ultimaDataCompra = {};
+        for (const auto& compra : compras.listar()) {
+            string idTarefa = compra->getIdTarefa();
+            Tarefa* tarefa = tarefas.buscarPorId(idTarefa);
+            if (tarefa) {
+                Lar* lar = lares.buscarPorId(tarefa->getIdLar());
+                if (lar && ((lar->getCasal()->getIdPessoa1() == idPessoa1 && lar->getCasal()->getIdPessoa2() == idPessoa2) ||
+                            (lar->getCasal()->getIdPessoa1() == idPessoa2 && lar->getCasal()->getIdPessoa2() == idPessoa1))) {
+                    // Adiciona o número de parcelas - 1 meses à data de início da tarefa
+                    tm novaData = adicionarMeses(tarefa->getDataInicio(), compra->getNumParcelas() - 1);
+                    if (mktime(&novaData) > mktime(&ultimaDataCompra)) {
+                        ultimaDataCompra = novaData;
+                    }          
+                }
+            }
+        }
+
+        // Determina a maior data entre todas as despesas do casal
+        vector<tm> datas = {ultimaDataTarefa, ultimaDataFesta, ultimaDataCompra};
+        dataFinal = encontrarMaiorData(datas);
+
+        if (dataFinal.tm_year == -1) {
+            cout << "Data final inválida" << endl;
+            return {};
+        }
+
+        // Se não houver despesas, retorna a data atual + 1 mês como fallback
+        if (dataFinal.tm_year == 0 && dataFinal.tm_mon == 0 && dataFinal.tm_mday == 0) {
+            // Se não houver despesas, retorna a data atual + 1 mês como fallback
+            time_t now = time(nullptr); // Obtém a data atual
+            tm dataAtual = *localtime(&now); // Converte para tm
+            return adicionarMeses(dataAtual, 1); // Adiciona 1 mês
+        }
+
+        return dataFinal;
+}
+
+tm PlanejamentoFinanceiro::adicionarMeses(std::tm data, int meses) {
+    // Adiciona os meses ao campo tm_mon
+    data.tm_mon += meses;
+
+    // Ajusta o ano e o mês caso tm_mon ultrapasse os limites (0-11)
+    while (data.tm_mon > 11) {
+        data.tm_mon -= 12;
+        data.tm_year += 1;
+    }
+    while (data.tm_mon < 0) {
+        data.tm_mon += 12;
+        data.tm_year -= 1;
+    }
+
+    return data;
+}
+
+tm PlanejamentoFinanceiro::encontrarMenorData(const vector<tm>& datas) {
+    if (datas.empty()) {
+        tm dataVazia = {};
+        dataVazia.tm_year = -1; // Indica que não há data válida
+        return dataVazia;
+    }
+
+    return *min_element(datas.begin(), datas.end(), [](const tm& a, const tm& b) {
+        return mktime(const_cast<tm*>(&a)) < mktime(const_cast<tm*>(&b));
+    });
+}
+
+tm PlanejamentoFinanceiro::encontrarMaiorData(const vector<tm>& datas) {
+    if (datas.empty()) {
+        tm dataVazia = {};
+        dataVazia.tm_year = -1; // Indica que não há data válida
+        return dataVazia;
+    }
+
+    return *max_element(datas.begin(), datas.end(), [](const tm& a, const tm& b) {
+        return mktime(const_cast<tm*>(&a)) < mktime(const_cast<tm*>(&b));
+    });
 }
 
 } // namespace service

@@ -5,6 +5,7 @@
 #include <map>
 #include <vector>
 #include <ctime>
+#include <iomanip>
 #include "model/Casal.hpp"
 #include "model/Casamento.hpp"
 #include "model/Compra.hpp"
@@ -68,6 +69,10 @@ private:
     double calcularGastosPorMes(const string& idCasamento, tm data, const string& idPessoa1, const string& idPessoa2);
 
     bool estaParcelaSendoPaga(tm dataInicio, int numParcelas, tm dataConsulta);
+
+    tm adicionarMeses(std::tm data, int meses);
+    tm encontrarMenorData(const vector<tm>& datas);
+    tm encontrarMaiorData(const vector<tm>& datas);
 
     tm encontrarPrimeiroGasto(Casal* casal);
     tm calcularDataFinal(Casal* casal, const string& idPessoa1, const string& idPessoa2);

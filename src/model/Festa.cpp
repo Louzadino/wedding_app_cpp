@@ -124,7 +124,6 @@ ostream& operator<<(ostream& os, const Festa& festa) {
        << "Valor da festa: R$ " << fixed << setprecision(2) << festa.valorFesta << endl
        << "Número de parcelas: " << festa.numParcelas << endl
        << "Valor da parcela: R$ " << fixed << setprecision(2) << festa.getValorParcela() << endl
-       << "Data: " << util::formatDate(festa.data, FORMATADOR_DATA) << endl
        << "Hora: " << festa.hora << endl
        << "Convidados:" << endl;
     for (const auto& convidado : festa.convidados) {

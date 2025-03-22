@@ -153,7 +153,7 @@ void FestaRepository::carregarDados(const string& caminhoArquivo, CasamentoRepos
         dataFormatada << put_time(&data, "%d/%m/%Y");
 
         // Cria a festa com a data formatada como string
-        Festa* festa = new Festa(idFesta, idCasamento, local, valorFesta, numParcelas, dataFormatada.str(), hora, convidados);
+        Festa* festa = new Festa(idFesta, idCasamento, local, valorFesta, numParcelas, data, hora, convidados);
         adicionar(festa);
     }
 }
