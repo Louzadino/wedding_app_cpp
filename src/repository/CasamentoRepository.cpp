@@ -107,11 +107,11 @@ void CasamentoRepository::carregarDados(const string& caminhoArquivo, PessoaRepo
                                    " não cadastrado no Casamento de ID " + idCasamento + ".");
         }
         if (!pessoa1Existe) {
-            throw invalid_argument("ID de Pessoa " + idPessoa1 +
+            throw invalid_argument("ID(s) de Pessoa " + idPessoa1 +
                                    " não cadastrado no Casamento de ID " + idCasamento + ".");
         }
         if (!pessoa2Existe) {
-            throw invalid_argument("ID de Pessoa " + idPessoa2 +
+            throw invalid_argument("ID(s) de Pessoa " + idPessoa2 +
                                    " não cadastrado no Casamento de ID " + idCasamento + ".");
         }
 

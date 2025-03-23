@@ -109,13 +109,13 @@ void CompraRepository::carregarDados(const string& caminhoArquivo, TarefaReposit
         // 🔹 Validação: Verifica se o ID da Tarefa existe
         model::Tarefa* tarefa = tarefaRepo.buscarPorId(idTarefa);
         if (tarefa == nullptr) {
-            throw invalid_argument("ID de Tarefa " + idTarefa + " não cadastrado na compra de ID " + idCompra + ".");
+            throw invalid_argument("ID(s) de Tarefa " + idTarefa + " não cadastrado na compra de ID " + idCompra + ".");
         }
 
         // 🔹 Validação: Verifica se a Loja existe e se é de fato uma Loja
         Pessoa* pessoa = pessoaRepo.buscarPorId(idLoja);
         if (pessoa == nullptr) {
-            throw invalid_argument("ID de Loja " + idLoja + " não cadastrado na compra de ID " + idCompra + ".");
+            throw invalid_argument("ID(s) de Loja " + idLoja + " não cadastrado na compra de ID " + idCompra + ".");
         }
 
         // Verifica se é uma Pessoa Jurídica e Loja

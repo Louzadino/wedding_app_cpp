@@ -18,6 +18,7 @@
 #include "service/PlanejamentoFinanceiro.hpp"
 
 #include "exception/DataInconsistencyException.hpp"
+#include "exception/TratamentoExceptions.hpp"
 
 using namespace std;
 
@@ -77,7 +78,7 @@ int main(int argc, char* argv[]) {
         // Criar ou limpar arquivo CSV
         ofstream writer(caminhoArquivoRelatorio1);
         if (!writer.is_open()) {
-            throw runtime_error("Erro ao abrir arquivo de saída.");
+            throw runtime_error("Erro ao abrir arquivo de saída do relatório.");
         }
         writer.close();
 
@@ -107,10 +108,9 @@ int main(int argc, char* argv[]) {
             }
         }
 
-    } catch (const DataInconsistencyException& e) {
-        cerr << "Exceção capturada: " << e.what() << endl;
-    } catch (const std::runtime_error& e) {
-        cerr << "Exceção capturada: " << e.what() << endl;
+    } catch (const invalid_argument& e) {
+        exception::TratamentoExceptions tratamentoExceptions(new invalid_argument(e.what()));
+        tratamentoExceptions.escreveDadosInconsistentesException(caminhoArquivoEntrada);
     }
 
     return 0;

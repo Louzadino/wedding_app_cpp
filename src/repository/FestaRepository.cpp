@@ -123,7 +123,7 @@ void FestaRepository::carregarDados(const string& caminhoArquivo, CasamentoRepos
         // 🔹 Validação: Verifica se o ID do casamento existe
         Casamento* casamento = casamentoRepo.buscarPorId(idCasamento);
         if (casamento == nullptr) {
-            throw invalid_argument("ID de Casamento " + idCasamento + " não cadastrado na festa de ID " + idFesta + ".");
+            throw invalid_argument("ID(s) de Casamento " + idCasamento + " não cadastrado na festa de ID " + idFesta + ".");
         }
 
         // Obtém os nomes dos donos da festa

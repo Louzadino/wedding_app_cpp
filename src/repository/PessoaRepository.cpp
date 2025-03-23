@@ -151,6 +151,7 @@ void PessoaRepository::carregarDados(const string& caminhoArquivo) {
             PessoaFisica* pessoaFisica = new PessoaFisica(nome, telefone, endereco, cpf, dataNascimento, financeiro, id);
 
             if (cpfs.find(cpf) != cpfs.end() && cpfs[cpf] != id) {
+                delete pessoaFisica;
                 throw invalid_argument("O CPF " + cpf + " da Pessoa " + id + " é repetido.");
             }
             adicionar(pessoaFisica);
@@ -162,17 +163,27 @@ void PessoaRepository::carregarDados(const string& caminhoArquivo) {
 
             if (tipo == "J") {
                 PessoaJuridica* pessoaJuridica = new PessoaJuridica(nome, telefone, endereco, cnpj, id);
-                if (cnpjs.find(cnpj) != cnpjs.end() && cnpjs[cnpj] != id) {
+            
+                // Usa .find() e .at() sem criar valor automaticamente
+                auto it = cnpjs.find(cnpj);
+                if (it != cnpjs.end() && it->second != id) {
+                    delete pessoaJuridica;
                     throw invalid_argument("O CNPJ " + cnpj + " da Pessoa " + id + " é repetido.");
                 }
+            
+                // Força o valor no mapa sem otimização
+                cnpjs.insert({cnpj, id});
+            
                 adicionar(pessoaJuridica);
             } else if (tipo == "L") {
                 Loja* loja = new Loja(nome, telefone, endereco, cnpj, id);
                 adicionar(loja);
+            } else {
+                throw invalid_argument("Tipo de pessoa inválido encontrado: " + tipo);
             }
-        } else {
-            cout << "Tipo de pessoa inválido encontrado, ignorando: " << tipo << endl;
+            
         }
+            
     }
 }
 

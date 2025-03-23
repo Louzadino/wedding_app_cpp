@@ -230,8 +230,10 @@ void PlanejamentoFinanceiro::escreverCSV(const string& filePath, PessoaFisica* p
         while (true) {
             char buffer[8];
             strftime(buffer, sizeof(buffer), "%m/%Y", &dataAtual);
-            file << buffer << ";";
+            file << buffer;
+
             if (dataAtual.tm_year == dataFim.tm_year && dataAtual.tm_mon == dataFim.tm_mon) break;
+            file << ";"; // Adiciona ponto e vírgula se não for a última coluna
             dataAtual = adicionarMeses(dataAtual, 1);
         }
         file << "\n";
@@ -243,7 +245,9 @@ void PlanejamentoFinanceiro::escreverCSV(const string& filePath, PessoaFisica* p
             char buffer[8];
             strftime(buffer, sizeof(buffer), "%m/%Y", &dataAtual);
             file << "R$ " << fixed << setprecision(2) << saldoMensal[buffer] << ";";
+
             if (dataAtual.tm_year == dataFim.tm_year && dataAtual.tm_mon == dataFim.tm_mon) break;
+
             dataAtual = adicionarMeses(dataAtual, 1);
         }
         file << "\n";
@@ -252,10 +256,10 @@ void PlanejamentoFinanceiro::escreverCSV(const string& filePath, PessoaFisica* p
 
 bool PlanejamentoFinanceiro::estaParcelaSendoPaga(tm dataInicio, int numParcelas, tm dataConsulta) {
     for (int i = 0; i < numParcelas; i++) {
-        dataInicio.tm_mon++;
         if (dataInicio.tm_year == dataConsulta.tm_year && dataInicio.tm_mon == dataConsulta.tm_mon) {
             return true;
         }
+        dataInicio = adicionarMeses(dataInicio, 1);
     }
     return false;
 }
@@ -305,7 +309,6 @@ tm PlanejamentoFinanceiro::encontrarPrimeiroGasto(Casal* casal) {
     // Retorna a menor data encontrada ou um valor nulo caso não haja dados
     tm menorData = encontrarMenorData(datas);
     if (menorData.tm_year == -1) {
-        cout << "Menor data inválida" << endl;
         return {};
     }
 
@@ -369,7 +372,6 @@ tm PlanejamentoFinanceiro::calcularDataFinal(Casal* casal, const string& idPesso
         dataFinal = encontrarMaiorData(datas);
 
         if (dataFinal.tm_year == -1) {
-            cout << "Data final inválida" << endl;
             return {};
         }
 
