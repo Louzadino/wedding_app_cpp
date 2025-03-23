@@ -1,5 +1,6 @@
 #include "FestaRepository.hpp"
 #include "util/CSVReader.hpp"
+#include "exception/DataInconsistencyException.hpp"
 #include <iostream>
 #include <sstream>
 #include <iomanip>
@@ -7,6 +8,7 @@
 #include <stdexcept>
 
 using namespace std;
+using namespace exception;
 
 namespace repository {
 
@@ -24,13 +26,13 @@ FestaRepository::~FestaRepository() {
 
 void FestaRepository::adicionar(Festa* festa) {
     if (festa == nullptr) {
-        throw invalid_argument("A festa não pode ser nula.");
+        throw DataInconsistencyException("A festa não pode ser nula.");
     }
     if (festas.find(festa->getIdFesta()) != festas.end()) {
-        throw invalid_argument("Já existe uma festa com este ID no repositório.");
+        throw DataInconsistencyException("Já existe uma festa com este ID no repositório.");
     }
     if (casamentosComFesta.find(festa->getIdCasamento()) != casamentosComFesta.end()) {
-        throw invalid_argument("O casamento com ID " + festa->getIdCasamento() + " já possui uma festa cadastrada.");
+        throw DataInconsistencyException("O casamento com ID " + festa->getIdCasamento() + " já possui uma festa cadastrada.");
     }
 
     festas[festa->getIdFesta()] = festa;
@@ -39,10 +41,10 @@ void FestaRepository::adicionar(Festa* festa) {
 
 void FestaRepository::remover(Festa* festa) {
     if (festa == nullptr) {
-        throw invalid_argument("A festa não pode ser nula.");
+        throw DataInconsistencyException("A festa não pode ser nula.");
     }
     if (festas.find(festa->getIdFesta()) == festas.end()) {
-        throw invalid_argument("A festa não existe no repositório.");
+        throw DataInconsistencyException("A festa não existe no repositório.");
     }
 
     festas.erase(festa->getIdFesta());
@@ -59,7 +61,7 @@ vector<Festa*> FestaRepository::listar() const {
 
 Festa* FestaRepository::buscarPorId(const string& id) const {
     if (id.empty()) {
-        throw invalid_argument("O ID não pode ser nulo ou vazio.");
+        throw DataInconsistencyException("O ID não pode ser nulo ou vazio.");
     }
     auto it = festas.find(id);
     if (it != festas.end()) {
@@ -93,7 +95,7 @@ void FestaRepository::carregarDados(const string& caminhoArquivo, CasamentoRepos
 
         // Verifica se o ID da festa já existe
         if (festas.find(idFesta) != festas.end()) {
-            throw invalid_argument("ID repetido " + idFesta + " na classe Festa.");
+            throw DataInconsistencyException("ID repetido " + idFesta + " na classe Festa.");
         }
 
         string local = campos[2];
@@ -103,7 +105,7 @@ void FestaRepository::carregarDados(const string& caminhoArquivo, CasamentoRepos
         istringstream dataStream(campos[3]);
         dataStream >> get_time(&data, "%d/%m/%Y");
         if (dataStream.fail()) {
-            throw invalid_argument("Erro ao converter data para festa com ID " + idFesta);
+            throw DataInconsistencyException("Erro ao converter data para festa com ID " + idFesta);
         }
 
         string hora = campos[4];
@@ -114,7 +116,7 @@ void FestaRepository::carregarDados(const string& caminhoArquivo, CasamentoRepos
         double valorFesta;
         valorStream >> valorFesta;
         if (valorStream.fail()) {
-            throw invalid_argument("Erro ao converter valor para festa com ID " + idFesta);
+            throw DataInconsistencyException("Erro ao converter valor para festa com ID " + idFesta);
         }
 
         int numParcelas = stoi(campos[6]);
@@ -123,7 +125,7 @@ void FestaRepository::carregarDados(const string& caminhoArquivo, CasamentoRepos
         // 🔹 Validação: Verifica se o ID do casamento existe
         Casamento* casamento = casamentoRepo.buscarPorId(idCasamento);
         if (casamento == nullptr) {
-            throw invalid_argument("ID(s) de Casamento " + idCasamento + " não cadastrado na festa de ID " + idFesta + ".");
+            throw DataInconsistencyException("ID(s) de Casamento " + idCasamento + " não cadastrado na festa de ID " + idFesta + ".");
         }
 
         // Obtém os nomes dos donos da festa
@@ -131,7 +133,7 @@ void FestaRepository::carregarDados(const string& caminhoArquivo, CasamentoRepos
         PessoaFisica* dono2 = dynamic_cast<PessoaFisica*>(pessoaRepo.buscarPorId(casamento->getCasal()->getIdPessoa2()));
 
         if (dono1 == nullptr || dono2 == nullptr) {
-            throw invalid_argument("Os donos da festa com ID " + idFesta + " não foram encontrados.");
+            throw DataInconsistencyException("Os donos da festa com ID " + idFesta + " não foram encontrados.");
         }
 
         string nomeDono1 = dono1->getNome();

@@ -1,6 +1,8 @@
 #include "Compra.hpp"
+#include "exception/DataInconsistencyException.hpp"
 
 using namespace std;
+using namespace exception;
 
 namespace model {
 
@@ -13,25 +15,25 @@ Compra::Compra(const string& idCompra, const string& idLoja,
 
     // Validações
     if (idCompra.empty() || !regex_match(idCompra, regex("\\d{32}"))) {
-        throw invalid_argument("O ID da compra deve ter exatamente 32 dígitos numéricos.");
+        throw DataInconsistencyException("O ID da compra deve ter exatamente 32 dígitos numéricos.");
     }
     if (idLoja.empty() || !regex_match(idLoja, regex("\\d{32}"))) {
-        throw invalid_argument("O ID da loja deve ter exatamente 32 dígitos numéricos.");
+        throw DataInconsistencyException("O ID da loja deve ter exatamente 32 dígitos numéricos.");
     }
     if (idTarefa.empty() || !regex_match(idTarefa, regex("\\d{32}"))) {
-        throw invalid_argument("O ID da tarefa deve ter exatamente 32 dígitos numéricos.");
+        throw DataInconsistencyException("O ID da tarefa deve ter exatamente 32 dígitos numéricos.");
     }
     if (nomeProduto.empty()) {
-        throw invalid_argument("O nome do produto não pode ser vazio.");
+        throw DataInconsistencyException("O nome do produto não pode ser vazio.");
     }
     if (quantidade <= 0) {
-        throw invalid_argument("A quantidade de itens comprados deve ser maior que zero.");
+        throw DataInconsistencyException("A quantidade de itens comprados deve ser maior que zero.");
     }
     if (valorUnitario <= 0) {
-        throw invalid_argument("O valor unitário dos itens comprados deve ser maior que zero.");
+        throw DataInconsistencyException("O valor unitário dos itens comprados deve ser maior que zero.");
     }
     if (numParcelas <= 0) {
-        throw invalid_argument("O número de parcelas deve ser maior que zero.");
+        throw DataInconsistencyException("O número de parcelas deve ser maior que zero.");
     }
 }
 

@@ -1,7 +1,9 @@
 #include "Lar.hpp"
+#include "exception/DataInconsistencyException.hpp"
 #include <algorithm>
 
 using namespace std;
+using namespace exception;
 
 namespace model {
 
@@ -14,7 +16,7 @@ Lar::Lar(const string& idLar, Casal *casal, const Endereco& endereco)
 // Validação do ID
 void Lar::validarId(const string& id) const {
     if (id.empty() || id.length() != 32 || !all_of(id.begin(), id.end(), ::isdigit)) {
-        throw invalid_argument("O ID do lar deve conter exatamente 32 dígitos numéricos.");
+        throw DataInconsistencyException("O ID do lar deve conter exatamente 32 dígitos numéricos.");
     }
 }
 

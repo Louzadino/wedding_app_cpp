@@ -7,22 +7,12 @@
 using namespace std;
 using namespace exception;
 
-// 🔹 Construtor para erro de entrada e saída
-TratamentoExceptions::TratamentoExceptions(ios_base::failure* mensagemIO)
-    : mensagemIO(mensagemIO), mensagemDadoInconsistente(nullptr), mensagemParsing(nullptr) {}
-
-// 🔹 Construtor para erro de dados inconsistentes
-TratamentoExceptions::TratamentoExceptions(runtime_error* mensagemDadoInconsistente)
-    : mensagemDadoInconsistente(mensagemDadoInconsistente), mensagemIO(nullptr), mensagemParsing(nullptr) {}
-
 // 🔹 Construtor para erro de parsing
-TratamentoExceptions::TratamentoExceptions(invalid_argument* mensagemParsing)
-    : mensagemParsing(mensagemParsing), mensagemDadoInconsistente(nullptr), mensagemIO(nullptr) {}
+TratamentoExceptions::TratamentoExceptions(DataInconsistencyException* mensagemParsing)
+    : mensagemParsing(mensagemParsing) {}
 
 // 🔹 Destrutor
 TratamentoExceptions::~TratamentoExceptions() {
-    delete mensagemDadoInconsistente;
-    delete mensagemIO;
     delete mensagemParsing;
 }
 
@@ -55,11 +45,7 @@ void TratamentoExceptions::escreveDadosInconsistentesException(const string& dir
     }
 
     // 🔹 Exibe a mensagem da exceção
-    if (mensagemDadoInconsistente != nullptr) {
-        cout << mensagemDadoInconsistente->what() << endl;
-    } else if (mensagemIO != nullptr) {
-        cout << mensagemIO->what() << endl;
-    } else if (mensagemParsing != nullptr) {
+    if (mensagemParsing != nullptr) {
         cout << mensagemParsing->what() << endl;
     }
 }

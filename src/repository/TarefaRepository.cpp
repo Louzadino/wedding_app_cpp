@@ -1,5 +1,6 @@
 #include "TarefaRepository.hpp"
 #include "util/CSVReader.hpp"
+#include "exception/DataInconsistencyException.hpp"
 #include <iostream>
 #include <sstream>
 #include <iomanip>
@@ -7,6 +8,7 @@
 #include <stdexcept>
 
 using namespace std;
+using namespace exception;
 
 namespace repository {
 
@@ -28,20 +30,20 @@ TarefaRepository::~TarefaRepository() {
 
 void TarefaRepository::adicionar(Tarefa* tarefa) {
     if (tarefa == nullptr) {
-        throw invalid_argument("A tarefa não pode ser nula.");
+        throw DataInconsistencyException("A tarefa não pode ser nula.");
     }
     if (tarefas.find(tarefa->getIdTarefa()) != tarefas.end()) {
-        throw invalid_argument("Já existe uma tarefa com este ID no repositório.");
+        throw DataInconsistencyException("Já existe uma tarefa com este ID no repositório.");
     }
     tarefas[tarefa->getIdTarefa()] = tarefa;
 }
 
 void TarefaRepository::remover(Tarefa* tarefa) {
     if (tarefa == nullptr) {
-        throw invalid_argument("A tarefa não pode ser nula.");
+        throw DataInconsistencyException("A tarefa não pode ser nula.");
     }
     if (tarefas.find(tarefa->getIdTarefa()) == tarefas.end()) {
-        throw invalid_argument("A tarefa não existe no repositório.");
+        throw DataInconsistencyException("A tarefa não existe no repositório.");
     }
     tarefas.erase(tarefa->getIdTarefa());
 }
@@ -56,7 +58,7 @@ vector<Tarefa*> TarefaRepository::listar() const {
 
 Tarefa* TarefaRepository::buscarPorId(const string& id) const {
     if (id.empty()) {
-        throw invalid_argument("O ID não pode ser nulo ou vazio.");
+        throw DataInconsistencyException("O ID não pode ser nulo ou vazio.");
     }
     auto it = tarefas.find(id);
     if (it != tarefas.end()) {
@@ -84,7 +86,7 @@ void TarefaRepository::carregarDados(const string& caminhoArquivo, LarRepository
 
         // Verifica se o ID já existe no repositório
         if (tarefas.find(idTarefa) != tarefas.end()) {
-            throw invalid_argument("ID repetido " + idTarefa + " na classe Tarefa.");
+            throw DataInconsistencyException("ID repetido " + idTarefa + " na classe Tarefa.");
         }
 
         string idLar = campos[1];
@@ -95,7 +97,7 @@ void TarefaRepository::carregarDados(const string& caminhoArquivo, LarRepository
         istringstream ss(campos[3]);
         ss >> get_time(&dataInicio, "%d/%m/%Y");
         if (ss.fail()) {
-            throw invalid_argument("Erro ao converter data para tarefa com ID " + idTarefa);
+            throw DataInconsistencyException("Erro ao converter data para tarefa com ID " + idTarefa);
         }
 
         int prazoEntrega = stoi(campos[4]);
@@ -106,7 +108,7 @@ void TarefaRepository::carregarDados(const string& caminhoArquivo, LarRepository
         double valorPrestador;
         valorStream >> valorPrestador;
         if (valorStream.fail()) {
-            throw invalid_argument("Erro ao converter valor para tarefa com ID " + idTarefa);
+            throw DataInconsistencyException("Erro ao converter valor para tarefa com ID " + idTarefa);
         }
 
         int numParcelas = stoi(campos[6]);
@@ -114,13 +116,13 @@ void TarefaRepository::carregarDados(const string& caminhoArquivo, LarRepository
         // 🔹 Validação: Verifica se o ID do Lar existe
         Lar* lar = larRepo.buscarPorId(idLar);
         if (lar == nullptr) {
-            throw invalid_argument("ID(s) de Lar " + idLar + " não cadastrado na Tarefa de ID " + idTarefa + ".");
+            throw DataInconsistencyException("ID(s) de Lar " + idLar + " não cadastrado na Tarefa de ID " + idTarefa + ".");
         }
 
         // 🔹 Validação: Verifica se o ID do Prestador de Serviço existe
         Pessoa* prestador = pessoaRepo.buscarPorId(idPrestador);
         if (prestador == nullptr) {
-            throw invalid_argument("ID(s) de Prestador de Serviço " + idPrestador + " não cadastrado na Tarefa de ID " + idTarefa + ".");
+            throw DataInconsistencyException("ID(s) de Prestador de Serviço " + idPrestador + " não cadastrado na Tarefa de ID " + idTarefa + ".");
         }
 
         // Cria e adiciona a nova tarefa ao repositório

@@ -107,9 +107,8 @@ int main(int argc, char* argv[]) {
                 planejamento.gerarPlanejamento(caminhoArquivoRelatorio1, cpfs[0], cpfs[1]);
             }
         }
-
-    } catch (const invalid_argument& e) {
-        exception::TratamentoExceptions tratamentoExceptions(new invalid_argument(e.what()));
+    } catch (const DataInconsistencyException& e) {
+        exception::TratamentoExceptions tratamentoExceptions(new DataInconsistencyException(e.what()));
         tratamentoExceptions.escreveDadosInconsistentesException(caminhoArquivoEntrada);
     }
 

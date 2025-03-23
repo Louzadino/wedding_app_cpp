@@ -3,9 +3,12 @@
 #include <stdexcept>
 #include <regex>
 #include <iomanip>
+
 #include "Festa.hpp"
+#include "exception/DataInconsistencyException.hpp"
 
 using namespace std;
+using namespace exception;
 
 namespace model {
 
@@ -22,13 +25,13 @@ Casamento::Casamento(const string& idCasamento, Casal* casal,
     : idCasamento(idCasamento), casal(casal), dataCasamento(dataCasamento),
       horaCasamento(horaCasamento), localCerimonia(localCerimonia), festa(festa) {
     if (idCasamento.empty() || !regex_match(idCasamento, regex("\\d{32}"))) {
-        throw invalid_argument("O ID do casamento deve conter exatamente 32 dígitos numéricos.");
+        throw DataInconsistencyException("O ID do casamento deve conter exatamente 32 dígitos numéricos.");
     }
     if (horaCasamento.empty() || !regex_match(horaCasamento, regex("([01]\\d|2[0-3]):[0-5]\\d"))) {
-        throw invalid_argument("A hora do casamento deve estar no formato HH:mm (00:00 a 23:59).");
+        throw DataInconsistencyException("A hora do casamento deve estar no formato HH:mm (00:00 a 23:59).");
     }
     if (localCerimonia.empty()) {
-        throw invalid_argument("O local da cerimônia não pode ser vazio.");
+        throw DataInconsistencyException("O local da cerimônia não pode ser vazio.");
     }
 }
 
@@ -64,14 +67,14 @@ void Casamento::setDataCasamento(const tm& dataCasamento) {
 
 void Casamento::setHoraCasamento(const string& horaCasamento) {
     if (horaCasamento.empty() || !regex_match(horaCasamento, regex("([01]\\d|2[0-3]):[0-5]\\d"))) {
-        throw invalid_argument("A hora do casamento deve estar no formato HH:mm (00:00 a 23:59).");
+        throw DataInconsistencyException("A hora do casamento deve estar no formato HH:mm (00:00 a 23:59).");
     }
     this->horaCasamento = horaCasamento;
 }
 
 void Casamento::setLocalCerimonia(const string& localCerimonia) {
     if (localCerimonia.empty()) {
-        throw invalid_argument("O local da cerimônia não pode ser vazio.");
+        throw DataInconsistencyException("O local da cerimônia não pode ser vazio.");
     }
     this->localCerimonia = localCerimonia;
 }

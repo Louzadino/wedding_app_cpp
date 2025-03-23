@@ -1,9 +1,11 @@
 #include "Tarefa.hpp"
+#include "exception/DataInconsistencyException.hpp"
 #include <iomanip>
 #include <sstream>
 #include <regex>
 
 using namespace std;
+using namespace exception;
 
 namespace model {
 
@@ -23,27 +25,27 @@ Tarefa::Tarefa(const string& idTarefa, const string& idLar, const string& idPres
       numParcelas(numParcelas), compra(compra) {
 
     if (!regex_match(idTarefa, regex("\\d{32}"))) {
-        throw invalid_argument("O ID da tarefa deve conter exatamente 32 dígitos numéricos.");
+        throw DataInconsistencyException("O ID da tarefa deve conter exatamente 32 dígitos numéricos.");
     }
 
     if (!idLar.empty() && !regex_match(idLar, regex("\\d{32}"))) {
-        throw invalid_argument("O ID do lar deve conter exatamente 32 dígitos numéricos.");
+        throw DataInconsistencyException("O ID do lar deve conter exatamente 32 dígitos numéricos.");
     }
 
     if (!regex_match(idPrestador, regex("\\d{32}"))) {
-        throw invalid_argument("O ID do prestador deve conter exatamente 32 dígitos numéricos.");
+        throw DataInconsistencyException("O ID do prestador deve conter exatamente 32 dígitos numéricos.");
     }
 
     if (prazoEntrega <= 0) {
-        throw invalid_argument("O prazo de entrega deve ser um número positivo.");
+        throw DataInconsistencyException("O prazo de entrega deve ser um número positivo.");
     }
 
     if (valorPrestador < 0) {
-        throw invalid_argument("O valor do prestador não pode ser negativo.");
+        throw DataInconsistencyException("O valor do prestador não pode ser negativo.");
     }
 
     if (numParcelas <= 0) {
-        throw invalid_argument("O número de parcelas deve ser maior que zero.");
+        throw DataInconsistencyException("O número de parcelas deve ser maior que zero.");
     }
 
     this->idTarefa = idTarefa;

@@ -1,5 +1,6 @@
 #include "CasamentoRepository.hpp"
 #include "util/CSVReader.hpp"
+#include "exception/DataInconsistencyException.hpp"
 #include <iostream>
 #include <sstream>
 #include <iomanip>
@@ -7,6 +8,7 @@
 #include <stdexcept>
 
 using namespace std;
+using namespace exception;
 
 namespace repository {
 
@@ -26,20 +28,20 @@ CasamentoRepository::~CasamentoRepository() {
 
 void CasamentoRepository::adicionar(Casamento* casamento) {
     if (casamento == nullptr) {
-        throw invalid_argument("O casamento não pode ser nulo.");
+        throw DataInconsistencyException("O casamento não pode ser nulo.");
     }
     if (casamentos.find(casamento->getIdCasamento()) != casamentos.end()) {
-        throw invalid_argument("Já existe um casamento com este ID no repositório.");
+        throw DataInconsistencyException("Já existe um casamento com este ID no repositório.");
     }
     casamentos[casamento->getIdCasamento()] = casamento;
 }
 
 void CasamentoRepository::remover(Casamento* casamento) {
     if (casamento == nullptr) {
-        throw invalid_argument("O casamento não pode ser nulo.");
+        throw DataInconsistencyException("O casamento não pode ser nulo.");
     }
     if (casamentos.find(casamento->getIdCasamento()) == casamentos.end()) {
-        throw invalid_argument("O casamento não existe no repositório.");
+        throw DataInconsistencyException("O casamento não existe no repositório.");
     }
     casamentos.erase(casamento->getIdCasamento());
 }
@@ -54,7 +56,7 @@ vector<Casamento*> CasamentoRepository::listar() const {
 
 Casamento* CasamentoRepository::buscarPorId(const string& id) const {
     if (id.empty()) {
-        throw invalid_argument("O ID não pode ser nulo ou vazio.");
+        throw DataInconsistencyException("O ID não pode ser nulo ou vazio.");
     }
     auto it = casamentos.find(id);
     if (it != casamentos.end()) {
@@ -83,7 +85,7 @@ void CasamentoRepository::carregarDados(const string& caminhoArquivo, PessoaRepo
         string idCasamento = campos[0];
 
         if (casamentos.find(idCasamento) != casamentos.end()) {
-            throw invalid_argument("ID repetido " + idCasamento + " na classe Casamento.");
+            throw DataInconsistencyException("ID repetido " + idCasamento + " na classe Casamento.");
         }
 
         string idPessoa1 = campos[1];
@@ -93,7 +95,7 @@ void CasamentoRepository::carregarDados(const string& caminhoArquivo, PessoaRepo
         istringstream dataStream(campos[3]);
         dataStream >> get_time(&data, "%d/%m/%Y");
         if (dataStream.fail()) {
-            throw invalid_argument("Erro ao converter data para casamento com ID " + idCasamento);
+            throw DataInconsistencyException("Erro ao converter data para casamento com ID " + idCasamento);
         }
 
         string hora = campos[4];
@@ -103,15 +105,15 @@ void CasamentoRepository::carregarDados(const string& caminhoArquivo, PessoaRepo
         bool pessoa2Existe = pessoaRepo.buscarPorId(idPessoa2) != nullptr;
 
         if (!pessoa1Existe && !pessoa2Existe) {
-            throw invalid_argument("ID(s) de Pessoa " + idPessoa1 + " " + idPessoa2 +
+            throw DataInconsistencyException("ID(s) de Pessoa " + idPessoa1 + " " + idPessoa2 +
                                    " não cadastrado no Casamento de ID " + idCasamento + ".");
         }
         if (!pessoa1Existe) {
-            throw invalid_argument("ID(s) de Pessoa " + idPessoa1 +
+            throw DataInconsistencyException("ID(s) de Pessoa " + idPessoa1 +
                                    " não cadastrado no Casamento de ID " + idCasamento + ".");
         }
         if (!pessoa2Existe) {
-            throw invalid_argument("ID(s) de Pessoa " + idPessoa2 +
+            throw DataInconsistencyException("ID(s) de Pessoa " + idPessoa2 +
                                    " não cadastrado no Casamento de ID " + idCasamento + ".");
         }
 

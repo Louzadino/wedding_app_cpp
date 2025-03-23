@@ -1,5 +1,5 @@
 #include "PessoaRepository.hpp"
-
+#include "exception/DataInconsistencyException.hpp"
 #include "util/CSVReader.hpp"
 #include <iostream>
 #include <sstream>
@@ -9,6 +9,7 @@
 #include <ctime>
 
 using namespace std;
+using namespace exception;
 
 namespace repository {
 
@@ -27,10 +28,10 @@ PessoaRepository::~PessoaRepository() {
 void PessoaRepository::adicionar(Pessoa* pessoa) {
 
     if (pessoa == nullptr)
-        throw invalid_argument("A pessoa não pode ser nula.");
+        throw DataInconsistencyException("A pessoa não pode ser nula.");
 
     if (pessoas.find(pessoa->getIdPessoa()) != pessoas.end()) 
-        throw invalid_argument("Já existe uma pessoa com este ID no repositório.");
+        throw DataInconsistencyException("Já existe uma pessoa com este ID no repositório.");
 
     PessoaFisica* pf = dynamic_cast<PessoaFisica*>(pessoa);
     
@@ -38,7 +39,7 @@ void PessoaRepository::adicionar(Pessoa* pessoa) {
         // 🔹 Validação para Pessoa Física (CPF)
         if (auto* pf = dynamic_cast<PessoaFisica*>(pessoa)) {
             if (cpfs.find(pf->getCpf()) != cpfs.end() && cpfs[pf->getCpf()] != pf->getIdPessoa()) {
-                throw invalid_argument("O CPF " + pf->getCpf() + " da Pessoa " + pf->getIdPessoa() + " é repetido.");
+                throw DataInconsistencyException("O CPF " + pf->getCpf() + " da Pessoa " + pf->getIdPessoa() + " é repetido.");
             }
             cpfs[pf->getCpf()] = pf->getIdPessoa(); // Adiciona ao mapa de CPFs
         }
@@ -46,7 +47,7 @@ void PessoaRepository::adicionar(Pessoa* pessoa) {
         // 🔹 Validação para Pessoa Jurídica e Loja (CNPJ)
         if (auto* pj = dynamic_cast<PessoaJuridica*>(pessoa)) {
             if (cnpjs.find(pj->getCnpj()) != cnpjs.end() && cnpjs[pj->getCnpj()] != pj->getIdPessoa()) {
-                throw invalid_argument("O CNPJ " + pj->getCnpj() + " da Pessoa " + pj->getIdPessoa() + " é repetido.");
+                throw DataInconsistencyException("O CNPJ " + pj->getCnpj() + " da Pessoa " + pj->getIdPessoa() + " é repetido.");
             }
             cnpjs[pj->getCnpj()] = pj->getIdPessoa(); // Adiciona ao mapa de CNPJs
         }
@@ -57,10 +58,10 @@ void PessoaRepository::adicionar(Pessoa* pessoa) {
 
 void PessoaRepository::remover(Pessoa* pessoa) {
     if (pessoa == nullptr) {
-        throw invalid_argument("A pessoa não pode ser nula.");
+        throw DataInconsistencyException("A pessoa não pode ser nula.");
     }
     if (pessoas.find(pessoa->getIdPessoa()) == pessoas.end()) {
-        throw invalid_argument("A pessoa não existe no repositório.");
+        throw DataInconsistencyException("A pessoa não existe no repositório.");
     }
 
     // Remove dos mapas auxiliares de CPF/CNPJ
@@ -83,7 +84,7 @@ vector<Pessoa*> PessoaRepository::listar() const {
 
 Pessoa* PessoaRepository::buscarPorId(const string& id) const {
     if (id.empty()) {
-        throw invalid_argument("O ID não pode ser nulo ou vazio.");
+        throw DataInconsistencyException("O ID não pode ser nulo ou vazio.");
     }
     auto it = pessoas.find(id);
     if (it != pessoas.end()) {
@@ -110,7 +111,7 @@ void PessoaRepository::carregarDados(const string& caminhoArquivo) {
         string id = campos[0];
 
         if (pessoas.find(id) != pessoas.end()) {
-            throw invalid_argument("ID repetido " + id + " na classe Pessoa.");
+            throw DataInconsistencyException("ID repetido " + id + " na classe Pessoa.");
         }
 
         string tipo = campos[1];
@@ -128,7 +129,7 @@ void PessoaRepository::carregarDados(const string& caminhoArquivo) {
             istringstream dataStream(campos[6]);
             dataStream >> get_time(&dataNascimento, "%d/%m/%Y");
             if (dataStream.fail()) {
-                throw invalid_argument("Erro ao converter data para pessoa com ID " + id);
+                throw DataInconsistencyException("Erro ao converter data para pessoa com ID " + id);
             }
 
             istringstream dinheiroStream(campos[7]);
@@ -152,7 +153,7 @@ void PessoaRepository::carregarDados(const string& caminhoArquivo) {
 
             if (cpfs.find(cpf) != cpfs.end() && cpfs[cpf] != id) {
                 delete pessoaFisica;
-                throw invalid_argument("O CPF " + cpf + " da Pessoa " + id + " é repetido.");
+                throw DataInconsistencyException("O CPF " + cpf + " da Pessoa " + id + " é repetido.");
             }
             adicionar(pessoaFisica);
         } 
@@ -168,7 +169,7 @@ void PessoaRepository::carregarDados(const string& caminhoArquivo) {
                 auto it = cnpjs.find(cnpj);
                 if (it != cnpjs.end() && it->second != id) {
                     delete pessoaJuridica;
-                    throw invalid_argument("O CNPJ " + cnpj + " da Pessoa " + id + " é repetido.");
+                    throw DataInconsistencyException("O CNPJ " + cnpj + " da Pessoa " + id + " é repetido.");
                 }
             
                 // Força o valor no mapa sem otimização
@@ -179,7 +180,7 @@ void PessoaRepository::carregarDados(const string& caminhoArquivo) {
                 Loja* loja = new Loja(nome, telefone, endereco, cnpj, id);
                 adicionar(loja);
             } else {
-                throw invalid_argument("Tipo de pessoa inválido encontrado: " + tipo);
+                throw DataInconsistencyException("Tipo de pessoa inválido encontrado: " + tipo);
             }
             
         }

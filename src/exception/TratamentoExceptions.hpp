@@ -6,20 +6,18 @@
 #include <fstream>
 #include <iostream>
 
+#include "exception/DataInconsistencyException.hpp"
+
 using namespace std;
 
 namespace exception {
 
 class TratamentoExceptions {
 private:
-    runtime_error* mensagemDadoInconsistente;
-    ios_base::failure* mensagemIO;
-    invalid_argument* mensagemParsing;
+    DataInconsistencyException* mensagemParsing;
 
 public:
-    TratamentoExceptions(ios_base::failure* mensagemIO);
-    TratamentoExceptions(runtime_error* mensagemDadoInconsistente);
-    TratamentoExceptions(invalid_argument* mensagemParsing);
+    TratamentoExceptions(DataInconsistencyException* mensagemParsing);
     ~TratamentoExceptions();
 
     void escreveDadosInconsistentesException(const string& diretorioBase);

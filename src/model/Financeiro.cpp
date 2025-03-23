@@ -1,7 +1,9 @@
 #include "Financeiro.hpp"
+#include "exception/DataInconsistencyException.hpp"
 
 using namespace std;
 using namespace model;
+using namespace exception;
 
 namespace model {
 
@@ -12,7 +14,7 @@ Financeiro::Financeiro(double dinheiroPoupanca, double salarioLiquido, double ga
 
 double Financeiro::validarValor(double valor, const string& campo) const {
     if (valor < 0) {
-        throw invalid_argument(campo + " não pode ser negativo.");
+        throw DataInconsistencyException(campo + " não pode ser negativo.");
     }
     return valor;
 }
