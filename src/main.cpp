@@ -85,6 +85,7 @@ int main(int argc, char* argv[]) {
         // Ler os CPFs do arquivo de entrada e gerar o planejamento
         string linha;
         while (getline(cin, linha)) {
+            // Procura o índice do primeiro e do último caractere na string que não seja um espaço (ou tabulação)
             linha.erase(0, linha.find_first_not_of(" \t")); // Remove espaços em branco do início
             linha.erase(linha.find_last_not_of(" \t") + 1); // Remove espaços em branco do final
 
@@ -93,11 +94,13 @@ int main(int argc, char* argv[]) {
                 break;
             }
 
-            stringstream ss(linha);
+            // Separar os CPFs da linha
+            stringstream ss(linha); // Cria um stream de string a partir da linha
             vector<string> cpfs;
             string cpf;
 
             while (getline(ss, cpf, ',')) {
+                // Procura o índice do primeiro e do último caractere na string que não seja um espaço (ou tabulação)
                 cpf.erase(0, cpf.find_first_not_of(" \t")); // Remove espaços antes do CPF
                 cpf.erase(cpf.find_last_not_of(" \t") + 1); // Remove espaços depois do CPF
                 cpfs.push_back(cpf);

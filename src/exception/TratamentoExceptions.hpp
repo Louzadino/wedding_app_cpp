@@ -12,6 +12,9 @@ using namespace std;
 
 namespace exception {
 
+/**
+ * Classe responsável por tratar as exceções lançadas durante a execução do programa.
+ */
 class TratamentoExceptions {
 private:
     DataInconsistencyException* mensagemParsing;

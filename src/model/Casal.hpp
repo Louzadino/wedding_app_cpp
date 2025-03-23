@@ -37,7 +37,7 @@ public:
     void setIdCasamento(const string& idCasamento);
     void setIdLar(const string& idLar);
 
-        /**
+    /**
      * Verifica se o casal possui um casamento registrado.
      * 
      * @return true se o casal tem um casamento, false caso contrário.

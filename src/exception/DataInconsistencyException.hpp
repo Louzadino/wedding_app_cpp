@@ -6,6 +6,9 @@
 
 namespace exception {
 
+/**
+ * Exceção lançada quando ocorre uma inconsistência nos dados.
+ */
 class DataInconsistencyException : public std::runtime_error {
 public:
     explicit DataInconsistencyException(const std::string& message);

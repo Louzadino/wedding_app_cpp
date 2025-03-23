@@ -25,7 +25,6 @@ CasamentoRepository::~CasamentoRepository() {
     casamentos.clear();
 }
 
-
 void CasamentoRepository::adicionar(Casamento* casamento) {
     if (casamento == nullptr) {
         throw DataInconsistencyException("O casamento não pode ser nulo.");

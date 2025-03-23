@@ -77,6 +77,7 @@ void EstatisticasCasaisService::adicionarEstatisticaCasal(const string& idPessoa
                                                           set<string>& casaisProcessados) {
     string chaveCasal = idPessoa1 + "-" + idPessoa2;
 
+    // Evita processar o mesmo casal mais de uma vez
     if (casaisProcessados.find(chaveCasal) != casaisProcessados.end()) {
         return;
     }
@@ -87,6 +88,7 @@ void EstatisticasCasaisService::adicionarEstatisticaCasal(const string& idPessoa
 
     if (!pessoa1 || !pessoa2) return;
 
+    // Ordena os nomes para garantir que a ordem de impressão seja sempre a mesma
     string nome1 = (pessoa1->getNome() < pessoa2->getNome()) ? pessoa1->getNome() : pessoa2->getNome();
     string nome2 = (pessoa1->getNome() < pessoa2->getNome()) ? pessoa2->getNome() : pessoa1->getNome();
 

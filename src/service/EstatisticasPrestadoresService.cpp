@@ -63,6 +63,7 @@ void EstatisticasPrestadoresService::gerarRelatorioPrestadores(const string& cam
     }
 
     // Converte o mapa para um vetor ordenado
+    // Vetor é um par de tipo do prestador (string) e valor recebido (double)
     vector<pair<string, double>> listaOrdenada(valoresRecebidos.begin(), valoresRecebidos.end());
 
     sort(listaOrdenada.begin(), listaOrdenada.end(), [&](const pair<string, double>& e1, const pair<string, double>& e2) {

@@ -12,6 +12,9 @@ using namespace std;
 
 namespace model {
 
+/**
+ * Classe que representa um casamento.
+ */
 class Casamento {
 
 private:
